@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<head>
+    <title>Interactive</title>
+    <div id="monitor-chart"></div>
+
+</head>
+<body>
+    <script type="text/javascript">
+        async function fetchMonitorData() {
+            const response = await fetch('/monitor');
+            return response.json();
+        }
+
+        async function updateMonitorChart() {
+            const data = await fetchMonitorData();
+            console.log(data);
+        }
+
+    </script>
+</body>
+</html>
