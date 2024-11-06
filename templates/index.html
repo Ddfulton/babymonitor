@@ -17,7 +17,7 @@
 
         async function updateMeanVolumes() {
             const data = await fetchMeanVolumes();
-            const x = Array.from({length: data.length}, (_, i) => i).reverse();
+            const x = 5 * Array.from({length: data.length}, (_, i) => i).reverse();
             const y = data.map(value => value);
             console.log(x, y);
             Plotly.newPlot('monitor-chart', [{x, y}]);
