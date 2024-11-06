@@ -9,12 +9,12 @@ from twilio.rest import Client
 from datetime import datetime as dt
 from datetime import timedelta
 
-outpath = 'sunday'
+outpath = 'data'
 if not os.path.exists(outpath):
     os.makedirs(outpath)
 
 # Set parameters
-duration = 5  # seconds to update display
+duration = 2  # seconds to update display
 sample_rate = 8000
 channels = 1
 # n = 300  # seconds of audio to display
@@ -68,7 +68,6 @@ def update_audio_buffer():
         )
 
         sd.wait()
-
         # Add it to the buffer
         audio_buffer = np.concatenate((
             audio_buffer,
@@ -76,6 +75,7 @@ def update_audio_buffer():
         ))
 
         mean_volumes = get_mean_volumes(audio_buffer)
+        # Decide whether to alert
         alert_or_not(mean_volumes)
 
         # Only save if buffer has data to avoid duplicate saves

@@ -3,20 +3,28 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <head>
     <title>Interactive</title>
+    <h3>Past minute mean volumes</h3>
     <div id="monitor-chart"></div>
 
 </head>
 <body>
     <script type="text/javascript">
-        async function fetchMonitorData() {
+
+        async function fetchMeanVolumes() {
             const response = await fetch('/monitor');
             return response.json();
         }
 
-        async function updateMonitorChart() {
-            const data = await fetchMonitorData();
-            console.log(data);
+        async function updateMeanVolumes() {
+            const data = await fetchMeanVolumes();
+            const x = Array.from({length: data.length}, (_, i) => i).reverse();
+            const y = data.map(value => value);
+            console.log(x, y);
+            Plotly.newPlot('monitor-chart', [{x, y}]);
         }
+
+        updateMeanVolumes();
+        setInterval(updateMeanVolumes, 1000);
 
     </script>
 </body>
