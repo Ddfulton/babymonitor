@@ -14,23 +14,25 @@ if not os.path.exists(outpath):
     os.makedirs(outpath)
 
 # Set parameters
-duration = 2  # seconds to update display
+duration = 5  # seconds to update display
 sample_rate = 8000
 channels = 1
 # n = 300  # seconds of audio to display
 lookback = 60
+min_call_interval = 60 * 5
 
 global last_reset
 last_reset = dt.now()
 
 global threshold
-threshold = 2.65
+threshold = 0.06
 
 # Set up mean volume windows
 window_count = int(lookback / duration)
 window_size_i = int(duration * sample_rate)
 global mean_volumes
 mean_volumes = np.zeros([window_count], dtype='float32')
+print(mean_volumes.shape)
 
 global last_alerted
 last_alerted = None
@@ -87,6 +89,7 @@ def update_audio_buffer():
                 last_reset = dt.now()
                 mean_volumes = np.zeros([window_count], dtype='float32')
 
+#%%
 def get_twilio_details():
     with open('.secrets', 'r') as f:
         lines = [line.strip() for line in f.readlines()]
@@ -94,9 +97,10 @@ def get_twilio_details():
         for line in lines:
             s = line.split(' =')
             k = s[0]
-            v = s[1].replace("'", '')
+            v = s[1].replace("'", '').strip()
             twilio_details[k] = v
     return twilio_details['twilio_auth_token'], twilio_details['twilio_account_sid'], twilio_details['twilio_phone_number']
+#%%
 
 
 # Route for the audio data (JSON format)
@@ -123,7 +127,7 @@ def alert_or_not(mean_volumes):
 
     # if x of the last y windows are above threshold, alert
     x = 3
-    y = 10
+    y = 12
 
 
     if np.sum(mean_volumes[-y:] > threshold) >= x:
@@ -134,7 +138,7 @@ def alert_or_not(mean_volumes):
             call('+18575077597')
         else:
             time_since_last_alert = time.time() - last_alerted
-            if time_since_last_alert > 60:
+            if time_since_last_alert > min_call_interval:
                 print('Alert! Waking Alice!')
                 # Has been more than 5mins since last alert
                 last_alerted = time.time()
