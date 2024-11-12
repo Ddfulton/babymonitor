@@ -9,35 +9,30 @@ from twilio.rest import Client
 from datetime import datetime as dt
 from datetime import timedelta
 
-outpath = 'data'
+outpath = 'data'  # Path to save .npy data after it is recorded
 if not os.path.exists(outpath):
     os.makedirs(outpath)
 
-# Set parameters
+# Set constants
 duration = 5  # seconds to update display
 sample_rate = 8000
 channels = 1
-# n = 300  # seconds of audio to display
-lookback = 60
-min_call_interval = 60 * 5
-
-global last_reset
-last_reset = dt.now()
-
-global threshold
-threshold = 0.06
-
-# Set up mean volume windows
+lookback = 60  # Second into the past to display on the web interface
+min_call_interval = 60 * duration
 window_count = int(lookback / duration)
 window_size_i = int(duration * sample_rate)
-global mean_volumes
-mean_volumes = np.zeros([window_count], dtype='float32')
-print(mean_volumes.shape)
+app_dtype = np.float32
 
+# Set global variables
+global last_reset
+last_reset = dt.now()
+global threshold
+threshold = 0.06
+global mean_volumes
+mean_volumes = np.zeros([window_count], dtype=app_dtype)
 global last_alerted
 last_alerted = None
 
-app_dtype = np.float32
 
 # Flask app setup
 app = Flask(__name__)
