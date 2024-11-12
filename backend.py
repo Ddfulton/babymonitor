@@ -43,8 +43,8 @@ mean_volume = 0
 
 @app.route('/ram_consumption')
 def ram_consumption():
-    size_mb = audio_buffer.nbytes / 1e6
-    return f'{size_mb:.2f} MB'
+    size_mb = audio_buffer.nbytes / 1e3
+    return f'{size_mb:.2f} KB'
 
 def save_audio_buffer(audio_buffer):
     np.save(f'{outpath}/{dt.now().strftime("%Y-%m-%d_%H-%M-%S")}.npy', audio_buffer)
